@@ -6,7 +6,7 @@ let peliculas = [
     { nombre: "Candyman", imagen: "img/candyman-lidera-taquilla-de-cine-free-guy-paw-patrol-la-pelicula-947224-1.webp", puntuacion: 0, votos: 0 },
     { nombre: "Kraven", imagen: "img/kraven.webp", puntuacion: 0, votos: 0 },
     { nombre: "Viernes13", imagen: "img/viernes13.webp", puntuacion: 0, votos: 0 },
-    { nombre: "Spiderman", imagen: "img/Spiderman.jpg", puntuacion: 0, votos: 0 },
+    { nombre: "Spiderman", imagen: "img/spiderman.jpg", puntuacion: 0, votos: 0 },
     { nombre: "Liga de la justicia", imagen: "img/justiceleague.webp", puntuacion: 0, votos: 0 },
 ];
 
