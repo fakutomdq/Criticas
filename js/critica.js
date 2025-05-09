@@ -1,4 +1,3 @@
-
 let peliculas = [
     { nombre: "Deadpool y Wolverine", imagen: "img/wolberine.jpg", puntuacion: 0, votos: 0 },
     { nombre: "Pokémon Legends", imagen: "img/pokemonlegendsza.webp", puntuacion: 0, votos: 0 },
@@ -10,25 +9,25 @@ let peliculas = [
     { nombre: "Liga de la justicia", imagen: "img/justiceleague.webp", puntuacion: 0, votos: 0 },
 ];
 
-
 function saludarUsuario() {
     let nombreUsuario = prompt("¿Cuál es tu nombre?");
     const saludo = document.getElementById('saludo');
 
     if (nombreUsuario && nombreUsuario.trim() !== "") {
-        alert(`¡Hola, ${nombreUsuario}! Bienvenido a Cavernageek.`);
-        if (saludo) saludo.innerText = `¡Hola, ${nombreUsuario}! Bienvenido a Cavernageek.`;
-    } else {
+        if (saludo) saludo.innerText = `Bienvenido ${nombreUsuario} a Cavernageek.`;
+    }else {
         alert("¡Hola, visitante! Bienvenido a Cavernageek.");
         if (saludo) saludo.innerText = `¡Hola, visitante! Bienvenido a Cavernageek.`;
     }
 }
+function  mostrarPeliculas(lista) {
+    const listaPeliculas = document.getElementById("peliculas-lista");
+    listaPeliculas.innerHTML = "";
+    lista.forEach((pelicula, index) => {
+        const card = document.createElement('div');
+        card.classList.add('col-md.3' , 'my-3' );
 
-
-function mostrarPeliculas(lista) {
-    const listaPeliculas = document.getElementById('peliculas-lista');
-    listaPeliculas.innerHTML = ''; 
-
+    });
     lista.forEach((pelicula, index) => {
         const card = document.createElement('div');
         card.classList.add('col-md-3', 'my-3');
@@ -61,21 +60,61 @@ function valorarPelicula(index, valor) {
 
     let pelicula = peliculas[index];
     pelicula.puntuacion = (pelicula.puntuacion * pelicula.votos + valor) / (pelicula.votos + 1);
+    
     pelicula.votos++;
-
-    mostrarPeliculas(peliculas); 
+    mostrarPeliculas(peliculas);
+    mostrarTop4();
+    
 }
 
 function buscarPeliculas() {
-    const texto = document.getElementById("buscador").value.toLowerCase();
+    const texto = document.getElementById("buscador").value.toLowerCase().trim();
     const resultado = peliculas.filter(p => p.nombre.toLowerCase().includes(texto));
 
     if (resultado.length > 0) {
         mostrarPeliculas(resultado);
     } else {
-        alert("No se encontraron películas con ese nombre.");
+        const listaPeliculas = document.getElementById('peliculas-lista');
+        listaPeliculas.innerHTML = '<p style="text-align:center;">todavia no hay tantas peliculas recien empezamos.</p>';
     }
+    
 }
+
+function mostrarTop4 () {
+    let top4 = [];
+    for (let i = 0; i < peliculas.length; i++) {
+        if (peliculas[i].votos > 0) {
+            top4.push(peliculas[i]);
+        }
+    }
+    for (let i = 0; i < top4.length - 1; i++) {
+        for (let j = i + 1; j < top4.length; j++) {
+            if (top4[j].puntuacion > top4[i].puntuacion) {
+                let temp = top4[i];
+                top4[i] = top4[j];
+                top4[j] = temp;
+            }
+        }
+    }
+    if (top4.length > 4) {
+        top4 = [top4[0], top4[1],top4[2], top4[3]]
+    }
+    const contenedorTop = document.getElementById("top4");
+    contenedorTop.innerHTML = "<h3>El Pináculo del Cine</h3>";
+
+    top4.forEach(pelicula => {
+        contenedorTop.innerHTML += `
+        <div>
+            <h5>${pelicula.nombre}</h5>
+            <p>Valoración: ${pelicula.puntuacion.toFixed(1)} / 5 - Votos: ${pelicula.votos}</p>
+        </div>
+        `;
+    });
+}
+
+
+
 
 saludarUsuario();
 mostrarPeliculas(peliculas);
+mostrarTop4()
