@@ -110,4 +110,27 @@ header {
   footer .navega a:hover img {
     opacity: 0.7;
   }
-  
+#entradaUsuario{
+  text-align:justify;
+  margin-top: 3rem;
+}
+#inputNombre{
+  max-width: 150px;
+  margin: 1rem 1rem 1rem 1rem;
+
+}
+#saludo{
+  margin-top: 1rem;
+  font-size: 1.5rem;
+  font-weight: bolder;
+  text-align: center;
+}
+#buscador{
+  max-width: 300px;
+  display: block;
+  font-size: 2rem;
+}
+#top4 {
+  margin-top: 3rem;
+  text-align: center;
+}

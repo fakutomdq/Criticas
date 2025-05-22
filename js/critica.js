@@ -10,16 +10,23 @@ let peliculas = [
 ];
 
 function saludarUsuario() {
-    let nombreUsuario = prompt("¿Cuál es tu nombre?");
+    let nombreUsuario = document.getElementById("inputNombre").value.trim();
     const saludo = document.getElementById('saludo');
-
-    if (nombreUsuario && nombreUsuario.trim() !== "") {
-        if (saludo) saludo.innerText = `Bienvenido ${nombreUsuario} a Cavernageek.`;
-    }else {
-        alert("¡Hola, visitante! Bienvenido a Cavernageek.");
-        if (saludo) saludo.innerText = `¡Hola, visitante! Bienvenido a Cavernageek.`;
+    const contenedorEntrada = document.getElementById('entradaUsuario');
+    if (nombreUsuario !== "") {
+        saludo.innerText = `Bienvenido ${nombreUsuario} a Cavernageek.`;
+        Swal.fire({
+            title:`¡Bienvenido ${nombreUsuario} `,
+             text: `gracias por elegir Cavernageek`,
+            icon: 'success',
+            confirmButtonText: 'Continuar'
+        });
+        contenedorEntrada.style.display = "none";
     }
+
+    
 }
+
 function  mostrarPeliculas(lista) {
     const listaPeliculas = document.getElementById("peliculas-lista");
     listaPeliculas.innerHTML = "";
@@ -62,8 +69,17 @@ function valorarPelicula(index, valor) {
     pelicula.puntuacion = (pelicula.puntuacion * pelicula.votos + valor) / (pelicula.votos + 1);
     
     pelicula.votos++;
+    localStorage.setItem("peliculas" , JSON.stringify(peliculas));
     mostrarPeliculas(peliculas);
     mostrarTop4();
+    
+Swal.fire({
+  position: "top-end",
+  icon: "success",
+  title: "Gracias por puntuar",
+  showConfirmButton: false,
+  timer: 1500
+});
     
 }
 
@@ -111,10 +127,11 @@ function mostrarTop4 () {
         `;
     });
 }
-
-
-
-
-saludarUsuario();
-mostrarPeliculas(peliculas);
-mostrarTop4()
+document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("peliculas")) {
+        peliculas = JSON.parse(localStorage.getItem("peliculas"));
+    }
+    saludarUsuario()
+    mostrarPeliculas(peliculas);
+    mostrarTop4();
+});
