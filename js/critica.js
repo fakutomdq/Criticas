@@ -1,13 +1,4 @@
-let peliculas = [
-    { nombre: "Deadpool y Wolverine", imagen: "img/wolberine.jpg", puntuacion: 0, votos: 0 },
-    { nombre: "Pokémon Legends", imagen: "img/pokemonlegendsza.webp", puntuacion: 0, votos: 0 },
-    { nombre: "Hulk", imagen: "img/hulk.webp", puntuacion: 0, votos: 0 },
-    { nombre: "Candyman", imagen: "img/candyman-lidera-taquilla-de-cine-free-guy-paw-patrol-la-pelicula-947224-1.webp", puntuacion: 0, votos: 0 },
-    { nombre: "Kraven", imagen: "img/kraven.webp", puntuacion: 0, votos: 0 },
-    { nombre: "Viernes13", imagen: "img/viernes13.webp", puntuacion: 0, votos: 0 },
-    { nombre: "Spiderman", imagen: "img/spiderman.jpg", puntuacion: 0, votos: 0 },
-    { nombre: "Liga de la justicia", imagen: "img/justiceleague.webp", puntuacion: 0, votos: 0 },
-];
+let peliculas = [];
 
 function saludarUsuario() {
     let nombreUsuario = document.getElementById("inputNombre").value.trim();
@@ -16,25 +7,18 @@ function saludarUsuario() {
     if (nombreUsuario !== "") {
         saludo.innerText = `Bienvenido ${nombreUsuario} a Cavernageek.`;
         Swal.fire({
-            title:`¡Bienvenido ${nombreUsuario} `,
-             text: `gracias por elegir Cavernageek`,
+            title:`¡Bienvenido ${nombreUsuario}`,
+            text: `gracias por elegir Cavernageek`,
             icon: 'success',
             confirmButtonText: 'Continuar'
         });
         contenedorEntrada.style.display = "none";
     }
-
-    
 }
-
-function  mostrarPeliculas(lista) {
+function mostrarPeliculas(lista) {
     const listaPeliculas = document.getElementById("peliculas-lista");
     listaPeliculas.innerHTML = "";
-    lista.forEach((pelicula, index) => {
-        const card = document.createElement('div');
-        card.classList.add('col-md.3' , 'my-3' );
 
-    });
     lista.forEach((pelicula, index) => {
         const card = document.createElement('div');
         card.classList.add('col-md-3', 'my-3');
@@ -67,42 +51,42 @@ function valorarPelicula(index, valor) {
 
     let pelicula = peliculas[index];
     pelicula.puntuacion = (pelicula.puntuacion * pelicula.votos + valor) / (pelicula.votos + 1);
-    
     pelicula.votos++;
-    localStorage.setItem("peliculas" , JSON.stringify(peliculas));
+    localStorage.setItem("peliculas", JSON.stringify(peliculas));
     mostrarPeliculas(peliculas);
     mostrarTop4();
-    
-Swal.fire({
-  position: "top-end",
-  icon: "success",
-  title: "Gracias por puntuar",
-  showConfirmButton: false,
-  timer: 1500
-});
-    
+
+    Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Gracias por puntuar",
+        showConfirmButton: false,
+        timer: 1500
+    });
 }
 
 function buscarPeliculas() {
     const texto = document.getElementById("buscador").value.toLowerCase().trim();
     const resultado = peliculas.filter(p => p.nombre.toLowerCase().includes(texto));
 
+    const listaPeliculas = document.getElementById('peliculas-lista');
     if (resultado.length > 0) {
         mostrarPeliculas(resultado);
     } else {
-        const listaPeliculas = document.getElementById('peliculas-lista');
-        listaPeliculas.innerHTML = '<p style="text-align:center;">todavia no hay tantas peliculas recien empezamos.</p>';
+        listaPeliculas.innerHTML = '<p style="text-align:center;">todavía no hay tantas películas, recién empezamos.</p>';
     }
-    
 }
 
-function mostrarTop4 () {
+
+function mostrarTop4() {
     let top4 = [];
+
     for (let i = 0; i < peliculas.length; i++) {
         if (peliculas[i].votos > 0) {
             top4.push(peliculas[i]);
         }
     }
+
     for (let i = 0; i < top4.length - 1; i++) {
         for (let j = i + 1; j < top4.length; j++) {
             if (top4[j].puntuacion > top4[i].puntuacion) {
@@ -112,9 +96,11 @@ function mostrarTop4 () {
             }
         }
     }
+
     if (top4.length > 4) {
-        top4 = [top4[0], top4[1],top4[2], top4[3]]
+        top4 = top4.slice(0, 4);
     }
+
     const contenedorTop = document.getElementById("top4");
     contenedorTop.innerHTML = "<h3>El Pináculo del Cine</h3>";
 
@@ -127,11 +113,26 @@ function mostrarTop4 () {
         `;
     });
 }
+function cargarPeliculas() {
+    fetch('./data/peliculas.json')
+        .then(response => response.json())
+        .then(data => {
+            if (localStorage.getItem("peliculas")) {
+                peliculas = JSON.parse(localStorage.getItem("peliculas"));
+            } else {
+                peliculas = data;
+            }
+            mostrarPeliculas(peliculas);
+            mostrarTop4();
+        })
+        .catch(error => {
+            console.error("Error al cargar el JSON", error);
+            mostrarPeliculas(peliculas);
+            mostrarTop4();
+        });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    if (localStorage.getItem("peliculas")) {
-        peliculas = JSON.parse(localStorage.getItem("peliculas"));
-    }
-    saludarUsuario()
-    mostrarPeliculas(peliculas);
-    mostrarTop4();
+    saludarUsuario();
+    cargarPeliculas();
 });
